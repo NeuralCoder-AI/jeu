@@ -3,7 +3,7 @@ name: Build Android APK
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch: # Permet de lancer la compilation manuellement en 1 clic
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,14 +19,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Configuration de Gradle
+      - name: Configurer Gradle Global
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
 
-      - name: Rendre Gradle exécutable
-        run: chmod +x gradlew
-
-      - name: Compilation de l'APK (Debug)
-        run: ./gradlew assembleDebug --stacktrace
+      - name: Compilation de l'APK via Gradle global
+        run: gradle assembleDebug --stacktrace
 
       - name: Télécharger l'APK (Artifact)
         uses: actions/upload-artifact@v4
