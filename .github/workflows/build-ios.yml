@@ -1,0 +1,42 @@
+name: Build iOS IPA (Unsigned)
+
+on:
+  workflow_dispatch: # Permet de lancer avec un bouton
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Java (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurer Gradle (Version 9.3.1)
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '9.3.1'
+
+      - name: Compilation iOS via Xcode (Sans signature)
+        run: |
+          # On rentre dans le dossier iOS
+          cd iosApp 
+          
+          # On lance la compilation Xcode en forçant la désactivation de la signature Apple
+          xcodebuild -project iosApp.xcodeproj -scheme iosApp -configuration Release -sdk iphoneos CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO build
+          
+          # On prépare le fichier .ipa
+          mkdir -p Payload
+          mv build/Release-iphoneos/iosApp.app Payload/
+          zip -r ../app-ios-unsigned.ipa Payload
+
+      - name: Télécharger l'IPA (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-ios-ipa
+          path: app-ios-unsigned.ipa
