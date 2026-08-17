@@ -1,0 +1,111 @@
+name: Multiplatform CI/CD (Android APK & iOS IPA)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  # ==========================================
+  # JOB 1 : Build Android APK (Ubuntu)
+  # ==========================================
+  build-android:
+    name: 🤖 Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: 🔑 Generate Debug Keystore on-the-fly
+        run: |
+          if [ ! -f "debug.keystore" ]; then
+            keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
+          fi
+
+      - name: 🔧 Make Gradle wrapper executable
+        run: chmod +x ./gradlew || true
+
+      - name: 🚀 Compile Android APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: 📦 Upload Android APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+
+  # ==========================================
+  # JOB 2 : Build iOS IPA (macOS)
+  # ==========================================
+  build-ios:
+    name: 🍎 Build iOS IPA (Unsigned)
+    runs-on: macos-14
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: 🔧 Make Gradle wrapper executable
+        run: chmod +x ./gradlew || true
+
+      - name: 🛠️ Build iOS App with xcodebuild
+        run: |
+          cd iosApp
+          xcodebuild \
+            -project iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: 📦 Package .app into IPA
+        run: |
+          cd iosApp
+          mkdir -p Payload
+          # Locate built .app bundle
+          APP_PATH=$(find build -name "*.app" -type d | head -n 1)
+          if [ -n "$APP_PATH" ]; then
+            cp -R "$APP_PATH" Payload/
+            zip -r ../app-ios-unsigned.ipa Payload
+            echo "✅ Successfully created app-ios-unsigned.ipa"
+          else
+            echo "❌ Error: Could not locate .app bundle"
+            exit 1
+          fi
+
+      - name: 📤 Upload iOS IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-ios-unsigned
+          path: app-ios-unsigned.ipa
+          retention-days: 14

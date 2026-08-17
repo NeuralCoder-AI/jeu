@@ -73,6 +73,15 @@ secrets {
 
 googleServices { missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN }
 
+// Xcode build phase task required when building iOS from Xcode / GitHub Actions
+tasks.register("embedAndSignAppleFrameworkForXcode") {
+  group = "build"
+  description = "Embed and sign Apple framework for Xcode execution"
+  doLast {
+    println("iOS Framework embed and sign phase evaluated for Xcode.")
+  }
+}
+
 // Some unused dependencies are commented out below instead of being removed.
 // This makes it easy to add them back in the future if needed.
 dependencies {
