@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Shield Ring Aura -->
+    <path
+        android:pathData="M54,26 A28,28 0 1,0 54,82 A28,28 0 1,0 54,26 Z"
+        android:strokeWidth="2.5"
+        android:strokeColor="#6000E5FF"
+        android:fillColor="#1500E5FF" />
+
+    <!-- Thruster Flame -->
+    <path
+        android:pathData="M48,72 L54,86 L60,72 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="54"
+                android:startY="72"
+                android:endX="54"
+                android:endY="86"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFFFB300" />
+                <item android:offset="0.6" android:color="#FFFF3D00" />
+                <item android:offset="1.0" android:color="#00FF3D00" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Spaceship Body Wings -->
+    <path
+        android:pathData="M54,32 L34,70 L46,65 L54,68 L62,65 L74,70 Z"
+        android:fillColor="#00E676" />
+
+    <!-- Spaceship Cockpit / Fuselage Center -->
+    <path
+        android:pathData="M54,32 L46,62 L54,66 L62,62 Z"
+        android:fillColor="#00B0FF" />
+
+    <!-- Spaceship Canopy Glow -->
+    <path
+        android:pathData="M54,38 L50,54 L54,58 L58,54 Z"
+        android:fillColor="#E0F7FA" />
+
+    <!-- Wing Highlight Lines -->
+    <path
+        android:pathData="M44,65 L36,69"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFFFFF" />
+    <path
+        android:pathData="M64,65 L72,69"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFFFFF" />
+
+    <!-- Mini Asteroids Dodged -->
+    <path
+        android:pathData="M26,38 L30,34 L33,37 L31,41 L27,42 Z"
+        android:fillColor="#A1887F" />
+    <path
+        android:pathData="M78,42 L83,39 L86,43 L84,48 L79,46 Z"
+        android:fillColor="#8D6E63" />
+
+    <!-- Star Particle Sparkle -->
+    <path
+        android:pathData="M54,20 L55,23 L58,24 L55,25 L54,28 L53,25 L50,24 L53,23 Z"
+        android:fillColor="#FFEA00" />
+</vector>

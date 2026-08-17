@@ -1,0 +1,6 @@
+{
+  "name": "Space Dodger",
+  "description": "Un jeu mobile d'action spatiale 2D où vous pilotez un vaisseau, esquivez les astéroïdes et collectez des bonus.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
