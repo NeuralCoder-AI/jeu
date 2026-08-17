@@ -24,6 +24,9 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
+      - name: Créer le fichier debug.keystore manquant 🔑
+        run: keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
+
       - name: Compilation de l'APK via Gradle
         run: gradle assembleDebug --stacktrace
 
