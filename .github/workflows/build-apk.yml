@@ -2,7 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "principal" ]
   workflow_dispatch:
 
 jobs:
@@ -19,12 +19,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Configurer Gradle Global
+      - name: Configurer Gradle (Version 9.3.1)
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: '8.5'
+          gradle-version: '9.3.1'
 
-      - name: Compilation de l'APK via Gradle global
+      - name: Compilation de l'APK via Gradle
         run: gradle assembleDebug --stacktrace
 
       - name: Télécharger l'APK (Artifact)
