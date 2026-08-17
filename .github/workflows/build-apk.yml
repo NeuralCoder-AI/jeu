@@ -1,0 +1,35 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Permet de lancer la compilation manuellement en 1 clic
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Java (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configuration de Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Rendre Gradle exécutable
+        run: chmod +x gradlew
+
+      - name: Compilation de l'APK (Debug)
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Télécharger l'APK (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: '**/build/outputs/apk/debug/*.apk'
