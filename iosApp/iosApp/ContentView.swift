@@ -1,5 +1,6 @@
 import UIKit
 import SwiftUI
+import ComposeApp
 
 // Wrapper UIViewControllerRepresentable to bridge Compose Multiplatform to SwiftUI
 struct ComposeView: UIViewControllerRepresentable {
