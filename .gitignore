@@ -26,9 +26,8 @@ iosApp/*.xcuserdatad/
 *.ipa
 Payload/
 
-# Keep Gradle Wrapper files
-!gradle/wrapper/gradle-wrapper.jar
-!gradle/wrapper/gradle-wrapper.properties
-!gradlew
-!gradlew.bat
+# Gradle Wrapper binary files (generated on-the-fly in CI)
+gradle/wrapper/gradle-wrapper.jar
+*.jar
+
 

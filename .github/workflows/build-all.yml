@@ -30,6 +30,9 @@ jobs:
         with:
           gradle-version: '8.11.1'
 
+      - name: 🔨 Repair Gradle Wrapper on-the-fly
+        run: gradle wrapper
+
       - name: 🔑 Generate Debug Keystore on-the-fly
         run: |
           if [ ! -f "debug.keystore" ]; then
@@ -70,6 +73,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
+
+      - name: 🔨 Repair Gradle Wrapper on-the-fly
+        run: gradle wrapper
 
       - name: 🔧 Make Gradle wrapper executable
         run: chmod +x ./gradlew || true
