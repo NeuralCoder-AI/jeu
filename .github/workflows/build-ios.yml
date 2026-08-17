@@ -1,7 +1,7 @@
 name: Build iOS IPA (Unsigned)
 
 on:
-  workflow_dispatch: # Permet de lancer avec un bouton
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,6 +21,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '9.3.1'
+
+      - name: Générer le wrapper Gradle manquant 🪄
+        run: gradle wrapper
 
       - name: Compilation iOS via Xcode (Sans signature)
         run: |
