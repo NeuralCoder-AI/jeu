@@ -6,7 +6,7 @@ import ComposeApp
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         // MainViewControllerKt is exported by the Kotlin Multiplatform shared framework
-        return MainViewControllerKt.MainViewController()
+        return MainViewControllerKt.mainViewController()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
