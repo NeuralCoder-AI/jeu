@@ -280,6 +280,7 @@
 					"$(SRCROOT)/../app/build/bin/iosSimulatorArm64/debugFramework",
 					"$(SRCROOT)/../app/build/bin/iosArm64/debugFramework",
 					"$(SRCROOT)/../app/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = iosApp/Info.plist;
@@ -288,6 +289,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"ComposeApp",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.aistudio.spacedodger.iosApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -310,6 +316,7 @@
 					"$(SRCROOT)/../app/build/bin/iosSimulatorArm64/releaseFramework",
 					"$(SRCROOT)/../app/build/bin/iosArm64/releaseFramework",
 					"$(SRCROOT)/../app/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = iosApp/Info.plist;
@@ -318,6 +325,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"ComposeApp",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.aistudio.spacedodger.iosApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
