@@ -74,60 +74,6 @@ secrets {
 
 googleServices { missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN }
 
-// Xcode build phase task required when building iOS from Xcode / GitHub Actions
-tasks.register("embedAndSignAppleFrameworkForXcode") {
-  group = "build"
-  description = "Embed and sign Apple framework for Xcode execution"
-  doLast {
-    val configuration = System.getenv("CONFIGURATION") ?: "Release"
-    val sdkName = System.getenv("SDK_NAME") ?: "iphoneos"
-    val frameworkDir = layout.buildDirectory.dir("xcode-frameworks/$configuration/$sdkName/ComposeApp.framework").get().asFile
-    val headersDir = File(frameworkDir, "Headers")
-    val modulesDir = File(frameworkDir, "Modules")
-    headersDir.mkdirs()
-    modulesDir.mkdirs()
-
-    val moduleMap = File(modulesDir, "module.modulemap")
-    moduleMap.writeText(
-      """
-      framework module ComposeApp {
-        umbrella header "ComposeApp.h"
-        export *
-        module * { export * }
-      }
-      """.trimIndent()
-    )
-
-    val header = File(headersDir, "ComposeApp.h")
-    header.writeText(
-      """
-      #import <Foundation/Foundation.h>
-      #import <UIKit/UIKit.h>
-
-      @interface MainViewControllerKt : NSObject
-      + (UIViewController * _Nonnull)MainViewController;
-      @end
-      """.trimIndent()
-    )
-
-    // Also copy to binary releaseFramework / debugFramework paths for Xcode search
-    val archs = listOf("iosSimulatorArm64", "iosArm64")
-    val configs = listOf("debugFramework", "releaseFramework")
-    for (arch in archs) {
-      for (cfg in configs) {
-        val targetFrameworkDir = layout.buildDirectory.dir("bin/$arch/$cfg/ComposeApp.framework").get().asFile
-        targetFrameworkDir.mkdirs()
-        File(targetFrameworkDir, "Headers").mkdirs()
-        File(targetFrameworkDir, "Modules").mkdirs()
-        File(targetFrameworkDir, "Modules/module.modulemap").writeText(moduleMap.readText())
-        File(targetFrameworkDir, "Headers/ComposeApp.h").writeText(header.readText())
-      }
-    }
-
-    println("iOS Framework ComposeApp (baseName = \"ComposeApp\") embed and sign phase evaluated for Xcode.")
-  }
-}
-
 // Some unused dependencies are commented out below instead of being removed.
 // This makes it easy to add them back in the future if needed.
 dependencies {
