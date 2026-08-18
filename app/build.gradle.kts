@@ -105,6 +105,7 @@ tasks.register("embedAndSignAppleFrameworkForXcode") {
       #import <UIKit/UIKit.h>
 
       @interface MainViewControllerKt : NSObject
+      + (UIViewController * _Nonnull)mainViewController;
       + (UIViewController * _Nonnull)MainViewController;
       @end
     """.trimIndent()
