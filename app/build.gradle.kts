@@ -106,7 +106,6 @@ tasks.register("embedAndSignAppleFrameworkForXcode") {
 
       @interface MainViewControllerKt : NSObject
       + (UIViewController * _Nonnull)mainViewController;
-      + (UIViewController * _Nonnull)MainViewController;
       @end
     """.trimIndent()
     File(headersDir, "$frameworkName.h").writeText(headerContent)
