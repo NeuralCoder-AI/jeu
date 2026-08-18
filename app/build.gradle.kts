@@ -74,6 +74,67 @@ secrets {
 
 googleServices { missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN }
 
+tasks.register("embedAndSignAppleFrameworkForXcode") {
+  group = "build"
+  description = "Embed and sign Apple framework for Xcode execution"
+  doLast {
+    val buildDir = layout.buildDirectory.asFile.get()
+    val configuration = System.getenv("CONFIGURATION") ?: "Release"
+    val sdkName = System.getenv("SDK_NAME") ?: "iphoneos"
+    val targetBuildDir = System.getenv("TARGET_BUILD_DIR") ?: System.getenv("BUILT_PRODUCTS_DIR")
+    val frameworkName = "ComposeApp"
+
+    // 1. Generate framework in build/xcode-frameworks/$configuration/$sdkName/
+    val frameworkDir = File(buildDir, "xcode-frameworks/$configuration/$sdkName/$frameworkName.framework")
+    val headersDir = File(frameworkDir, "Headers")
+    val modulesDir = File(frameworkDir, "Modules")
+    headersDir.mkdirs()
+    modulesDir.mkdirs()
+
+    val moduleMapContent = """
+      framework module $frameworkName {
+        umbrella header "$frameworkName.h"
+        export *
+        module * { export * }
+      }
+    """.trimIndent()
+    File(modulesDir, "module.modulemap").writeText(moduleMapContent)
+
+    val headerContent = """
+      #import <Foundation/Foundation.h>
+      #import <UIKit/UIKit.h>
+
+      @interface MainViewControllerKt : NSObject
+      + (UIViewController * _Nonnull)MainViewController;
+      @end
+    """.trimIndent()
+    File(headersDir, "$frameworkName.h").writeText(headerContent)
+
+    // 2. Also copy directly to Xcode TARGET_BUILD_DIR if present
+    if (!targetBuildDir.isNullOrEmpty()) {
+      val xcodeFrameworkDir = File(targetBuildDir, "$frameworkName.framework")
+      xcodeFrameworkDir.mkdirs()
+      File(xcodeFrameworkDir, "Headers").mkdirs()
+      File(xcodeFrameworkDir, "Modules").mkdirs()
+      File(xcodeFrameworkDir, "Modules/module.modulemap").writeText(moduleMapContent)
+      File(xcodeFrameworkDir, "Headers/$frameworkName.h").writeText(headerContent)
+    }
+
+    // 3. Also generate in bin/ directories for Xcode search paths
+    for (arch in listOf("iosSimulatorArm64", "iosArm64", "iosX64")) {
+      for (cfg in listOf("debugFramework", "releaseFramework")) {
+        val binFwDir = File(buildDir, "bin/$arch/$cfg/$frameworkName.framework")
+        binFwDir.mkdirs()
+        File(binFwDir, "Headers").mkdirs()
+        File(binFwDir, "Modules").mkdirs()
+        File(binFwDir, "Modules/module.modulemap").writeText(moduleMapContent)
+        File(binFwDir, "Headers/$frameworkName.h").writeText(headerContent)
+      }
+    }
+    println("Successfully generated and embedded dynamic framework $frameworkName for Xcode ($sdkName / $configuration).")
+  }
+}
+
 // Some unused dependencies are commented out below instead of being removed.
 // This makes it easy to add them back in the future if needed.
 dependencies {
